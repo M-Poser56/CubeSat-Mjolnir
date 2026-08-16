@@ -41,17 +41,17 @@ print("starting test")
 try:
 	while(True):
 		#on loop, move between both directions
-		pwm.ChangeDutyCycle(30) #30%
-		GPIO.output(PIN_1A, GPIO.LOW)
-		GPIO.output(PIN_2A, GPIO.HIGH)
+		pwm.ChangeDutyCycle(100) #N%
+		GPIO.output(PIN_1A, GPIO.LOW)  #THIS IS CLOCKWISE
+		GPIO.output(PIN_2A, GPIO.HIGH)  #THIS IS CLOCKWISE
 		time.sleep(delay_s)
 		#braking
 		GPIO.output(PIN_1A, GPIO.LOW)
 		GPIO.output(PIN_2A, GPIO.LOW)
 		time.sleep(delay_s)
 		#anti-clockwise
-		GPIO.output(PIN_1A, GPIO.LOW)
-		GPIO.output(PIN_2A, GPIO.HIGH)
+		GPIO.output(PIN_1A, GPIO.HIGH)
+		GPIO.output(PIN_2A, GPIO.LOW)
 		time.sleep(delay_s)
 		#braking
 		GPIO.output(PIN_1A, GPIO.LOW)
