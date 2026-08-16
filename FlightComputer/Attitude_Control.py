@@ -1,0 +1,1 @@
+#placeholder for attitude control file, reaction wheels and star tracker
