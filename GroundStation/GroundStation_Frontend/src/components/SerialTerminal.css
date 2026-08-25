@@ -1,0 +1,38 @@
+.serial-terminal {
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  background-color: #000000;
+  color: #ffffff;
+  font-family: "Courier New", Consolas, Menlo, monospace;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  box-sizing: border-box;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.serial-line {
+  min-height: 1.4em;
+}
+
+.serial-cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  margin-left: 0.35em;
+  background-color: #ffffff;
+  vertical-align: text-bottom;
+  animation: serial-cursor-blink 1s step-end infinite;
+}
+
+@keyframes serial-cursor-blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  50.01%, 100% {
+    opacity: 0;
+  }
+}

@@ -1,0 +1,9 @@
+@import "@fontsource/dseg7/classic-700.css";
+
+.clock {
+  font-family: "DSEG7", monospace;
+  font-weight: 700;
+  font-size: 2.25rem;
+  letter-spacing: 0.05em;
+  color: #008080;
+}

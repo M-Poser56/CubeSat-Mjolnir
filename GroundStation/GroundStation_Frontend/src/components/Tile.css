@@ -1,0 +1,22 @@
+.tile {
+  display: flex;
+  flex-direction: column;
+  background-color: #d3d6db;
+  border-radius: 1.25rem;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  box-sizing: border-box;
+}
+
+.tile-title {
+  flex: 0 0 auto;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  color: #142a52;
+}
+
+.tile-content {
+  flex: 1 1 auto;
+  min-height: 0;
+}

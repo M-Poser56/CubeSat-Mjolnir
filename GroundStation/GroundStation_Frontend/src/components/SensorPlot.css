@@ -1,0 +1,18 @@
+.sensor-plot {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.sensor-plot-label {
+  font-family: "Roboto", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #142a52;
+}
+
+.sensor-plot-chart {
+  flex: 1 1 0;
+  min-height: 0;
+}
