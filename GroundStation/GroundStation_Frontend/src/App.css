@@ -25,6 +25,7 @@
   flex-direction: row;
   gap: 1rem;
   flex: 2 1 0;
+  min-height: 0;
 }
 
 .tile-small {
