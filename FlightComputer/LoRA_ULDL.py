@@ -26,7 +26,16 @@ current_timeout = 5.0 #seconds, of delay, as our starting value
 def SensorPacket():
     #method which will query mqtt internal
     #server to retrieve angular orientation, and temp
-    return "90, 90, 75, 25*C" #dummy, for now
+
+    """
+    The sensor packet must be in the following serialized string format:
+    {int, int, int, intC, HH:MM:SS}
+    pitch, roll, yaw, temp+C, timestamp
+    """
+    dummy = "{90, 90, 25, 27C, 21:14:05}"
+    #need to properly make and serialize this
+
+    return dummy #dummy, for now
 
 
 
