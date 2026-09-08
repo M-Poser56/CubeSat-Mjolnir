@@ -1,0 +1,61 @@
+.command-panel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 100%;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.command-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  background-color: #000000;
+  color: #ffffff;
+  font-family: "Courier New", Consolas, Menlo, monospace;
+  font-size: 0.9rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #444444;
+  border-radius: 0.5rem;
+  outline: none;
+}
+
+.command-input:focus {
+  border-color: #888888;
+}
+
+.command-send {
+  flex: 0 0 auto;
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #ffffff;
+  background-color: #1a1a1a;
+  border: 1px solid #444444;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  cursor: pointer;
+}
+
+.command-send:hover:not(:disabled) {
+  background-color: #2a2a2a;
+}
+
+.command-send:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.command-status {
+  flex: 0 0 auto;
+  font-family: "Roboto", sans-serif;
+  font-size: 0.85rem;
+}
+
+.command-status-ok {
+  color: #1a8a3d;
+}
+
+.command-status-err {
+  color: #c0392b;
+}

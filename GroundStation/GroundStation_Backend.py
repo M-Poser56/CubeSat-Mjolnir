@@ -23,12 +23,23 @@ import time
 import serial
 import serial.tools.list_ports
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 BAUD = 115200
 PORT_SCAN_INTERVAL = 2.0  # seconds between retries while no Arduino is found
 
 app = FastAPI()
+# The frontend (Vite dev server) runs on a different origin than this
+# backend, so the browser blocks the /command POST without this — the
+# WebSocket connection isn't affected since browsers don't apply CORS
+# to it the same way.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 clients: set[WebSocket] = set()
 line_queue: asyncio.Queue[str] = asyncio.Queue()
 

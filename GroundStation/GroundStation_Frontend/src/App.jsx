@@ -3,6 +3,7 @@ import Tile from "./components/Tile";
 import Clock from "./components/Clock";
 import PlotsPanel from "./components/PlotsPanel";
 import SerialTerminal from "./components/SerialTerminal";
+import CommandPanel from "./components/CommandPanel";
 
 //frontend UI for the groundstation app & stack
 //I will have a few features in the window, basic stylistic details are noted below
@@ -52,7 +53,9 @@ function App() {
             </p>
           </Tile>
         </div>
-        <Tile title="Command Panel" className="tile-large" />
+        <Tile title="Command Panel" className="tile-large">
+          <CommandPanel />
+        </Tile>
       </div>
     </div>
   );

@@ -52,7 +52,11 @@ def Listen(current_timeout):
 
 def timeout_change(gndstation_command):
     global current_timeout
-    new_timeout=gndstation_command #need to properly parse this line
+    try:
+        new_timeout = float(gndstation_command)
+    except ValueError:
+        print(f"Ignoring non-numeric command: {gndstation_command!r}")
+        return
     current_timeout = new_timeout
 
 
