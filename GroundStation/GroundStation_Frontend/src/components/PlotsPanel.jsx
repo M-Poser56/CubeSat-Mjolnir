@@ -3,7 +3,7 @@ import SensorPlot from "./SensorPlot";
 import "./PlotsPanel.css";
 
 function PlotsPanel() {
-  const data = useOrientationStream();
+  const { data } = useOrientationStream();
 
   return (
     <div className="plots-panel">

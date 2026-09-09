@@ -1,10 +1,68 @@
 .command-panel {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: flex-start;
+  gap: 1.5rem;
   height: 100%;
   padding: 0.5rem;
   box-sizing: border-box;
+}
+
+.command-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  flex: 0 0 60%;
+  width: 60%;
+  min-width: 0;
+}
+
+.command-presets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.command-preset {
+  font-family: "Roboto", sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #dddddd;
+  background-color: #1a1a1a;
+  border: 1px solid #444444;
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+}
+
+.command-preset:hover {
+  background-color: #2a2a2a;
+  color: #ffffff;
+}
+
+.command-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.command-guide {
+  flex: 0 0 40%;
+  width: 40%;
+  min-width: 0;
+  height: 100%;
+  overflow-y: auto;
+  font-family: "Roboto", sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #333333;
+}
+
+.command-guide p {
+  margin: 0 0 0.85rem 0;
+}
+
+.command-guide p:last-child {
+  margin-bottom: 0;
 }
 
 .command-input {
@@ -13,8 +71,8 @@
   background-color: #000000;
   color: #ffffff;
   font-family: "Courier New", Consolas, Menlo, monospace;
-  font-size: 0.9rem;
-  padding: 0.6rem 0.75rem;
+  font-size: 1.2rem;
+  padding: 0.85rem 1rem;
   border: 1px solid #444444;
   border-radius: 0.5rem;
   outline: none;
@@ -28,12 +86,12 @@
   flex: 0 0 auto;
   font-family: "Roboto", sans-serif;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   color: #ffffff;
   background-color: #1a1a1a;
   border: 1px solid #444444;
   border-radius: 0.5rem;
-  padding: 0.6rem 1.1rem;
+  padding: 0.85rem 1.5rem;
   cursor: pointer;
 }
 

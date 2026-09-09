@@ -1,0 +1,248 @@
+.reaction-wheel-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+  padding: 0.75rem 0.5rem 0.6rem;
+  background: linear-gradient(180deg, #2b2f34 0%, #1b1e21 100%);
+  border-radius: 0.6rem;
+  border: 1px solid #0c0d0e;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    inset 0 2px 4px rgba(0, 0, 0, 0.6),
+    0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.rw-direction-row {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.rw-dir-label {
+  font-family: "Roboto", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #6b7178;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8);
+  transition: color 0.15s ease;
+}
+
+.rw-dir-active {
+  color: #ffffff;
+}
+
+.rw-switch {
+  position: relative;
+  display: inline-flex;
+  width: 2.6rem;
+  height: 1.3rem;
+  cursor: pointer;
+}
+
+.rw-switch input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.rw-switch-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #050505 0%, #1a1a1a 100%);
+  border: 1px solid #000000;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.9);
+  transition: background 0.15s ease;
+}
+
+.rw-switch input:checked + .rw-switch-track {
+  background: linear-gradient(180deg, #7a1f14 0%, #3a0d08 100%);
+}
+
+.rw-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(1.3rem - 4px);
+  height: calc(1.3rem - 4px);
+  border-radius: 50%;
+  background: linear-gradient(180deg, #ffffff 0%, #d7dadd 45%, #b7bcc2 55%, #eef0f2 100%);
+  border: 1px solid #101112;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  transition: left 0.15s ease;
+}
+
+.rw-switch input:checked ~ .rw-switch-track .rw-switch-thumb {
+  left: calc(100% - 1.3rem + 2px);
+}
+
+.rw-switch input:focus-visible + .rw-switch-track {
+  outline: 2px solid #ff9d1f;
+  outline-offset: 2px;
+}
+
+.rw-sliders {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: stretch;
+}
+
+.rw-slider-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  height: 100%;
+  min-height: 0;
+  padding: 0 0.6rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.rw-slider-group:first-child {
+  border-left: none;
+}
+
+.rw-slider-group:last-child {
+  border-right: none;
+}
+
+.rw-value {
+  flex: 0 0 auto;
+  font-family: "Courier New", Consolas, Menlo, monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #f4f6f8;
+  background-color: #0a0a0a;
+  border: 1px solid #000000;
+  border-radius: 0.2rem;
+  padding: 0.15rem 0.4rem;
+  min-width: 2.6rem;
+  text-align: center;
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.9),
+    0 0 4px rgba(255, 255, 255, 0.2);
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+}
+
+.rw-label {
+  flex: 0 0 auto;
+  font-family: "Roboto", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #b7bcc2;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8);
+}
+
+.rw-slider-track {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Graduated tick marks etched into the channel */
+.rw-slider-track::before {
+  content: "";
+  position: absolute;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  left: 50%;
+  width: 1.3rem;
+  transform: translateX(-50%);
+  background-image: repeating-linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.16) 0,
+    rgba(255, 255, 255, 0.16) 1px,
+    transparent 1px,
+    transparent 12.5%
+  );
+  pointer-events: none;
+}
+
+.rw-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 10px;
+  height: 100%;
+  cursor: pointer;
+  background: transparent;
+  position: relative;
+  z-index: 1;
+}
+
+.rw-slider:focus-visible {
+  outline: 2px solid #ff9d1f;
+  outline-offset: 2px;
+}
+
+/* Recessed metal channel the fader cap rides in */
+.rw-slider::-webkit-slider-runnable-track {
+  width: 10px;
+  background: linear-gradient(90deg, #050505 0%, #1a1a1a 45%, #050505 100%);
+  border-radius: 3px;
+  box-shadow:
+    inset 0 0 2px 1px #000000,
+    0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.rw-slider::-moz-range-track {
+  width: 10px;
+  background: linear-gradient(90deg, #050505 0%, #1a1a1a 45%, #050505 100%);
+  border-radius: 3px;
+  box-shadow:
+    inset 0 0 2px 1px #000000,
+    0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Fader cap — chunky, gripped, industrial */
+.rw-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 30px;
+  height: 16px;
+  margin-left: -10px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #6b7178 0%, #3d4045 45%, #2a2c2f 55%, #4a4e53 100%);
+  border: 1px solid #101112;
+  box-shadow:
+    0 2px 3px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  position: relative;
+}
+
+.rw-slider::-moz-range-thumb {
+  width: 30px;
+  height: 16px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #6b7178 0%, #3d4045 45%, #2a2c2f 55%, #4a4e53 100%);
+  border: 1px solid #101112;
+  box-shadow:
+    0 2px 3px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.rw-slider::-webkit-slider-thumb:active,
+.rw-slider::-moz-range-thumb:active {
+  background: linear-gradient(180deg, #7a8088 0%, #46494e 45%, #303236 55%, #575b61 100%);
+}

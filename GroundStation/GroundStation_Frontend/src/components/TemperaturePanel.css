@@ -1,0 +1,195 @@
+@import "@fontsource/dseg7/classic-700.css";
+
+.temperature-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+  padding: 0.75rem 0.85rem 0.6rem;
+  background: linear-gradient(180deg, #2b2f34 0%, #1b1e21 100%);
+  border-radius: 0.6rem;
+  border: 1px solid #0c0d0e;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    inset 0 2px 4px rgba(0, 0, 0, 0.6),
+    0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.temp-title {
+  flex: 0 0 auto;
+  text-align: left;
+  font-family: "Roboto", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #f4f6f8;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8);
+}
+
+.temp-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.temp-readouts {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.7rem;
+}
+
+.temp-readout {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.3rem;
+}
+
+.temp-value {
+  font-family: "DSEG7", monospace;
+  font-weight: 700;
+  font-size: 3.2rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: #008080;
+  text-shadow: 0 0 10px rgba(0, 128, 128, 0.55);
+}
+
+.temp-unit {
+  font-family: "DSEG7", monospace;
+  font-weight: 700;
+  font-size: 1.4rem;
+  line-height: 1;
+  margin-top: 0.25rem;
+  color: #008080;
+  text-shadow: 0 0 10px rgba(0, 128, 128, 0.55);
+}
+
+.temp-fahrenheit {
+  font-family: "DSEG7", monospace;
+  font-weight: 700;
+  font-size: 1.4rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: #c7ccd1;
+  text-shadow: 0 0 6px rgba(199, 204, 209, 0.4);
+}
+
+/* Heatmap slider — read-only gauge reflecting the current *C reading */
+
+.temp-gauge {
+  flex: 0 0 auto;
+  width: 4.5rem;
+  height: 27rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.temp-scale-label {
+  flex: 0 0 auto;
+  font-family: "Roboto", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
+}
+
+.temp-gauge-track {
+  flex: 0 0 auto;
+  height: 55%;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.temp-gauge-track::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.4rem;
+  height: 1px;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+.temp-heat-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 10px;
+  height: 100%;
+  cursor: default;
+  background: transparent;
+  position: relative;
+  z-index: 1;
+}
+
+.temp-heat-slider:disabled {
+  opacity: 1;
+}
+
+.temp-heat-slider::-webkit-slider-runnable-track {
+  width: 10px;
+  border-radius: 4px;
+  background: linear-gradient(
+    to top,
+    #0057ff 0%,
+    #ffffff 50%,
+    #ff1414 100%
+  );
+  box-shadow:
+    inset 0 0 2px 1px rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.temp-heat-slider::-moz-range-track {
+  width: 10px;
+  border-radius: 4px;
+  background: linear-gradient(
+    to top,
+    #0057ff 0%,
+    #ffffff 50%,
+    #ff1414 100%
+  );
+  box-shadow:
+    inset 0 0 2px 1px rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.temp-heat-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 34px;
+  height: 14px;
+  margin-left: -12px;
+  clip-path: polygon(16% 0%, 84% 0%, 100% 50%, 84% 100%, 16% 100%, 0% 50%);
+  background: linear-gradient(180deg, #ffffff 0%, #d7dadd 45%, #b7bcc2 55%, #eef0f2 100%);
+  border: 2px solid #101112;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.6);
+}
+
+.temp-heat-slider::-moz-range-thumb {
+  width: 34px;
+  height: 14px;
+  clip-path: polygon(16% 0%, 84% 0%, 100% 50%, 84% 100%, 16% 100%, 0% 50%);
+  background: linear-gradient(180deg, #ffffff 0%, #d7dadd 45%, #b7bcc2 55%, #eef0f2 100%);
+  border: 2px solid #101112;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.6);
+}

@@ -47,10 +47,14 @@ function timeStringToEpochMs(timeStr) {
 
 function useOrientationStream() {
   const [data, setData] = useState([]);
+  const [connected, setConnected] = useState(false);
 
   useEffect(() => {
     const socket = new WebSocket(SERIAL_WS_URL);
 
+    socket.onopen = () => setConnected(true);
+    socket.onclose = () => setConnected(false);
+    socket.onerror = () => setConnected(false);
     socket.onmessage = (event) => {
       const point = parsePacket(event.data);
       if (point === null) return;
@@ -60,7 +64,7 @@ function useOrientationStream() {
     return () => socket.close();
   }, []);
 
-  return data;
+  return { data, connected };
 }
 
 export default useOrientationStream;
