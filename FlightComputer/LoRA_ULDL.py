@@ -5,6 +5,7 @@ import busio
 import digitalio
 import adafruit_rfm9x
 from datetime import datetime
+import re
 
 
 #SPI setup, pins
@@ -29,24 +30,45 @@ def SensorPacket():
     #method which will query mqtt internal
     #server to retrieve angular orientation, and temp
 
+    #call function here which pulls from local mqtt queue
+    sensor_packet_temp = Fetch()
+
     """
     The sensor packet must be in the following serialized string format:
     {int, int, int, intC, HH:MM:SS}
     pitch, roll, yaw, temp+C, timestamp
     """
     timestamp = datetime.now().strftime("%H:%M:%S")
+    #add sensor_packet_temp here, same fashion as timestamp into dummy
     dummy = f"{{90, 90, 25, 27C, {timestamp}}}"
     #need to properly make and serialize this
+
+
     
 
     return dummy #dummy, for now
 
+def Fetch():
+    #function for fetching the most recent IMU & temp data from internal
+    #mqtt topic/queue
+    #this function fetches from the top of the queue, 'instantaneous'
+    return
 
+def CommandHandler(temp2command):
+    #debug
+    print(40*"*")
+    print(f"CMD: VALID HANDLER COMMAND RECIEVED: {temp2command}")
+    print(40*"*")
+
+    #instantaneous mqtt local publish here
+    
+    return
 
 def Downlink(packet):
     #method which sends sensor packet down
     #acknowledgement means it tries a few times, 2.5 seconds of attempts
     rfm9x.send_with_ack(packet.encode("utf-8"))
+    return
 
     
 
@@ -63,14 +85,16 @@ def Listen(current_timeout):
         return command
     return None #catch all, if the command is nothing
 
-def timeout_change(gndstation_command):
+def TimeoutChange(temp1_command):
     global current_timeout
     try:
-        new_timeout = float(gndstation_command)
-    except ValueError:
-        print(f"Ignoring non-numeric command: {gndstation_command!r}")
+        new_timeout = float(temp1_command)
+    except ValueError: #this is an old check, should never run but I'm keeping it in
+        print(f"Ignoring non-numeric command: {temp1_command!r}")
         return
     current_timeout = new_timeout
+    print(f"PACKET INTERVAL CHANGED TO: {current_timeout}")
+    return
 
 
 try:
@@ -90,23 +114,19 @@ try:
         #this will be our timeout, how long do I listen for
         #before the loop repeats. Need to change on the fly
         gndstation_command = Listen(current_timeout)
-        if gndstation_command is not None:
+        if bool(re.fullmatch(r"CMD:INTERVAL \d+", gndstation_command)): #if command is a timeout change valid command
             #parse string here to change timeout value
-            timeout_change(gndstation_command)
+            gndstation_command = gndstation_command.strip().split()[-1] #fetching <seconds>
+            TimeoutChange(gndstation_command) #casts string to float for assignment
+        elif gndstation_command.startswith("CMD:"):
+            #string is a valid command format, pass it to the handler for further checking
+            CommandHandler(gndstation_command)
 
-        #at the moment, the command simply is to change the
-        #timeout/loop delay value for getting sensor packets
-        #Once this is fully implemented, what I want to do 
-        #is to have reaction wheel control, as well as
-        #timeout changes
+        #end of main LoRA ULDL loop
+
+
 
 
 
 finally:
     print("Flight Computer Uplink/Downlink Deactivated")
-        
-
-    
-
-
-
