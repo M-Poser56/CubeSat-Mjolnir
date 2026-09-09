@@ -7,6 +7,7 @@ import adafruit_rfm9x
 from datetime import datetime
 import re
 import paho.mqtt.client as mqtt
+import threading
 
 
 
@@ -89,6 +90,26 @@ def Listen(current_timeout):
         return command
     return "NO COMMAND" #catch all, if the command is nothing
 
+
+def ListenThreaded(timeout): #claude's wrapper function, to address the 2 packets back to back bug
+    #runs Listen() and a matching sleep concurrently, and doesn't return until
+    #BOTH finish -- guarantees this call always takes at least `timeout` seconds,
+    #even if a packet (and its ack) comes back almost instantly
+    result = {}
+
+    def _worker():
+        result["command"] = Listen(timeout)
+
+    listen_thread = threading.Thread(target=_worker)
+    sleep_thread = threading.Thread(target=time.sleep, args=(timeout,))
+
+    listen_thread.start()
+    sleep_thread.start()
+    listen_thread.join()
+    sleep_thread.join()
+
+    return result["command"]
+
 def TimeoutChange(temp1_command):
     global current_timeout
     try:
@@ -137,7 +158,7 @@ try:
         #step 3, listen for incoming commands.
         #this will be our timeout, how long do I listen for
         #before the loop repeats. Need to change on the fly
-        gndstation_command = Listen(current_timeout)
+        gndstation_command = ListenThreaded(current_timeout) #wrapper function, which calls Listen()
         if bool(re.fullmatch(r"CMD:INTERVAL \d+", gndstation_command)): #if command is a timeout change valid command
             #parse string here to change timeout value
             gndstation_command = gndstation_command.strip().split()[-1] #fetching <seconds>
