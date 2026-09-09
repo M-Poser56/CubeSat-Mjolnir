@@ -61,7 +61,7 @@ def CommandHandler(temp2command):
     print(40*"*")
 
     #instantaneous mqtt local publish here
-    
+
     return
 
 def Downlink(packet):
@@ -83,7 +83,7 @@ def Listen(current_timeout):
         print(f"COMMAND RECIEVED: {command}")
         print(40*"*")
         return command
-    return None #catch all, if the command is nothing
+    return "NO COMMAND" #catch all, if the command is nothing
 
 def TimeoutChange(temp1_command):
     global current_timeout
