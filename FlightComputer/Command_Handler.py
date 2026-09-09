@@ -19,6 +19,7 @@ def CommandHandlerPublish(topublish):
         Command_Handler_client.publish("CMD/REBOOT", topublish)
     elif topublish == "CMD:STARTRACKER":
         Command_Handler_client.publish("CMD/STARTRACKER", topublish)
+        print("debug, success")
     elif bool(re.fullmatch(r"CMD:REACTIONWHEELS\{-?\d+,-?\d+,-?\d+\}", topublish)): #checks for signed integers in PWM% spots
         Command_Handler_client.publish("CMD/REACTIONWHEELS", topublish)
     else:
