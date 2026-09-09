@@ -6,6 +6,8 @@ import digitalio
 import adafruit_rfm9x
 from datetime import datetime
 import re
+import paho.mqtt.client as mqtt
+
 
 
 #SPI setup, pins
@@ -15,6 +17,7 @@ spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 #radio configs
 rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, 915.0)
 rfm9x.tx_power = 14
+
 
 rfm9x.node = 1           #CubeSat's Address
 rfm9x.destination = 2    #Groundstation's Address
@@ -61,6 +64,7 @@ def CommandHandler(temp2command):
     print(40*"*")
 
     #instantaneous mqtt local publish here
+    LoRA_ULDL_client.publish("CMD/HANDLER", temp2command.strip()) #gets rid of any trailing spaces
 
     return
 
@@ -95,6 +99,26 @@ def TimeoutChange(temp1_command):
     current_timeout = new_timeout
     print(f"PACKET INTERVAL CHANGED TO: {current_timeout}")
     return
+
+
+#mqtt specific
+def on_connect(client, userdata, flags, reason_code, properties):
+    print(f"mqtt localhost connected with result code {reason_code}")
+
+def on_publish(client, userdata, mid, reason_codes, properties):
+    print(f"Published message id {mid}")
+
+def on_message(client, userdata, msg):
+    print(f"msg recieved at: {msg.topic}: {msg.payload.decode()}")
+
+
+LoRA_ULDL_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+LoRA_ULDL_client.on_connect = on_connect
+#LoRA_ULDL_client.on_message = on_message #not yet defined
+LoRA_ULDL_client.on_publish = on_publish
+LoRA_ULDL_client.connect("localhost", 1883)
+LoRA_ULDL_client.loop_start()
+
 
 
 try:
