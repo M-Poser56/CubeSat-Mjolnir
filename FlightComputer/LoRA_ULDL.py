@@ -4,6 +4,8 @@ import board
 import busio
 import digitalio
 import adafruit_rfm9x
+from datetime import datetime
+
 
 #SPI setup, pins
 CS    = digitalio.DigitalInOut(board.CE1)   #GPIO 7
@@ -32,8 +34,10 @@ def SensorPacket():
     {int, int, int, intC, HH:MM:SS}
     pitch, roll, yaw, temp+C, timestamp
     """
-    dummy = "{90, 90, 25, 27C, 21:14:05}"
+    timestamp = datetime.now().strftime("%H:%M:%S")
+    dummy = f"{{90, 90, 25, 27C, {timestamp}}}"
     #need to properly make and serialize this
+    
 
     return dummy #dummy, for now
 
