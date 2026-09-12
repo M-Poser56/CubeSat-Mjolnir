@@ -35,7 +35,8 @@ def SensorPacket():
     #server to retrieve angular orientation, and temp
 
     #call function here which pulls from local mqtt queue
-    sensor_packet_temp = Fetch()
+    sensor_packet_temp = Fetch() #in this function, there should be a way for it only to contain 
+    #a single packet, the most recent. Use queue architecture, bada bing bada boom
 
     """
     The sensor packet must be in the following serialized string format:
