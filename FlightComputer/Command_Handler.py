@@ -8,7 +8,7 @@ import re
 
 command_queue = queue.Queue() #initialize script local queue to store upstream command messages
 
-#NEED TO TEST THE COMMANDS ARE GETTING THROUGH BEFORE WRITING ANY MORE CODE
+#Commands have been tested, this architecture works
 def CommandHandlerPublish(topublish):
     #check string against known commands, directly
     #if match, publish
