@@ -29,35 +29,30 @@ current_timeout = 5.0 #seconds, of delay, as our starting value
 #****when arduino sends a command, it needs to be
 #at least the length of time of the send with ack function
 #from the flight computer, preferrably double
+IMU_PACKET = "No_Packets_Recieved"
 
 def SensorPacket():
-    #method which will query mqtt internal
-    #server to retrieve angular orientation, and temp
-
-    #call function here which pulls from local mqtt queue
-    sensor_packet_temp = Fetch() #in this function, there should be a way for it only to contain 
-    #a single packet, the most recent. Use queue architecture, bada bing bada boom
-
+    sensor_packet_temp = Fetch() 
+    #Fetch() is a function that just returns
+    #the latest IMU packet value, using 
+    #global variable & mqtt architecture
+    #(threaded variable updating)
     """
     The sensor packet must be in the following serialized string format:
     {int, int, int, intC, HH:MM:SS}
     pitch, roll, yaw, temp+C, timestamp
     """
     timestamp = datetime.now().strftime("%H:%M:%S")
-    #add sensor_packet_temp here, same fashion as timestamp into dummy
-    dummy = f"{{90, 90, 25, 27C, {timestamp}}}"
-    #need to properly make and serialize this
-
-
     
-
-    return dummy #dummy, for now
+    downlink_packet = f"{{{sensor_packet_temp}, {timestamp}}}"
+    
+    return downlink_packet 
 
 def Fetch():
     #function for fetching the most recent IMU & temp data from internal
     #mqtt topic/queue
     #this function fetches from the top of the queue, 'instantaneous'
-    return
+    return IMU_PACKET #global variable updated by on_message()
 
 def CommandHandler(temp2command):
     #debug
@@ -126,17 +121,25 @@ def TimeoutChange(temp1_command):
 #mqtt specific
 def on_connect(client, userdata, flags, reason_code, properties):
     print(f"mqtt localhost connected with result code {reason_code}")
+    client.subscribe("IMU/PACKET")
 
 def on_publish(client, userdata, mid, reason_codes, properties):
     print(f"Published message id {mid}")
 
 def on_message(client, userdata, msg):
-    print(f"msg recieved at: {msg.topic}: {msg.payload.decode()}")
+    global IMU_PACKET #for immediate updating in the Fetch() function
+    IMU_PACKET = msg.payload.decode().strip()
+    #the updating of this global variable
+    #on a newly recieved message means that
+    #the newest data from the IMU is always
+    #returned by the fetch function, this
+    #threaded function runs in the background
+
 
 
 LoRA_ULDL_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 LoRA_ULDL_client.on_connect = on_connect
-#LoRA_ULDL_client.on_message = on_message #not yet defined
+LoRA_ULDL_client.on_message = on_message 
 LoRA_ULDL_client.on_publish = on_publish
 LoRA_ULDL_client.connect("localhost", 1883)
 LoRA_ULDL_client.loop_start()
@@ -176,3 +179,5 @@ try:
 
 finally:
     print("Flight Computer Uplink/Downlink Deactivated")
+    LoRA_ULDL_client.loop_stop()
+    LoRA_ULDL_client.disconnect()

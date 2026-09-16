@@ -49,4 +49,6 @@ try:
                 print(f"command failed with exit code {e.returncode}")
 finally:
         print("Flight Computer Star Tracker Script Deactivated")
+        Startracker_client.loop_stop()
+        Startracker_client.disconnect()
 

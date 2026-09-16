@@ -73,3 +73,5 @@ try:
 
 finally:
     print("Flight Computer Command Handler Deactivated")
+    Command_Handler_client.loop_stop()
+    Command_Handler_client.disconnect()
