@@ -34,7 +34,8 @@ IMU_client.loop_start()
 #IMU board setup
 i2c = busio.I2C(board.SCL, board.SDA) #board pins 5, and 3, respectively
 sensor = adafruit_bno055.BNO055_I2C(i2c)
-sensor.use_external_crystal = True
+#use_external_crystal left off (default/internal oscillator) - this board doesn't have one
+#populated, and forcing it caused persistent None/-128C garbage readings
 
 
 try:
