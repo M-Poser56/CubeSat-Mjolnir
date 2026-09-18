@@ -40,7 +40,7 @@ sensor = adafruit_bno055.BNO055_I2C(i2c)
 
 try:
     while True:
-        time.sleep(1) #maintain the 1Hz floor time limit for ambient temperature readings.
+        time.sleep(1.5) #maintain the 1Hz floor time limit for ambient temperature readings.
         #packet timeout speed for the main script will be between 2-5 seconds, so this loop natively
         #runs faster
 
