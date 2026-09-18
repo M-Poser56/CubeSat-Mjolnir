@@ -44,7 +44,7 @@ try:
 
         if recieved_command == "CMD:STARTRACKER":
             try:
-                subprocess.run(["python3", "/home/mjolnir/CubeSat-Mjolnir/TestFiles"], check=True)
+                subprocess.run(["python3", "/home/mjolnir/CubeSat-Mjolnir/TestFiles/camera_test.py"], check=True)
             except subprocess.CalledProcessError as e:
                 print(f"command failed with exit code {e.returncode}")
 finally:
