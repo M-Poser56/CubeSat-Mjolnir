@@ -54,19 +54,79 @@ print("successfully ran")
 
 
 
+#mqtt setup (this script only publishes, the dummy star tracker commands)
+#same as the other scripts, except connect_async: if mosquitto isn't up yet (ex. right at boot)
+#paho keeps retrying in the background instead of crashing this script, so the IMU logging
+#never depends on mqtt being alive
+#(no on_publish callback here, PhotoCommander() prints its own send confirmation, and the two
+#printing from different threads at the same moment garbled the log lines together)
+def on_connect(client, userdata, flags, reason_code, properties):
+    print(f"mqtt localhost connected with result code {reason_code}")
+
+FlightLoop_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+FlightLoop_client.on_connect = on_connect
+FlightLoop_client.reconnect_delay_set(min_delay=1, max_delay=10) #seconds between reconnect attempts
+FlightLoop_client.connect_async("localhost", 1883)
+FlightLoop_client.loop_start()
+
+
+#dummy star tracker (photo) commands
+photo_interval_min = 0.5 #MINUTES between photos, change this! (0.5 minimum)
+photo_interval = max(photo_interval_min, 0.5) * 60 #seconds, clamped so a typo can't queue photos faster than the camera takes them
+
+def PhotoCommander():
+    #runs in its own background thread, on its own timer
+    #publishes the exact command string the groundstation would send, to the same topic LoRA_ULDL's
+    #CommandHandler() publishes to, so the downstream runs exactly like Mk.I:
+    #FlightLoop.py -> CMD/HANDLER -> Command_Handler.py -> CMD/STARTRACKER -> Star_Tracker.py -> camera_test.py
+    #being its own thread means photos keep being commanded even if the IMU dies, and vice versa
+    next_photo = time.monotonic() + photo_interval
+    while True:
+        time.sleep(max(0, next_photo - time.monotonic()))
+        try:
+            result = FlightLoop_client.publish("CMD/HANDLER", "CMD:STARTRACKER")
+            if result.rc == mqtt.MQTT_ERR_SUCCESS:
+                print("Photo command sent: CMD:STARTRACKER")
+            else:
+                print(f"Photo command NOT sent, mqtt not connected (rc {result.rc}), trying again next interval")
+        except Exception as e: #never let this thread die quietly, or the photos stop for the rest of the flight
+            print(f"Photo command error: {e}")
+        next_photo += photo_interval
+        if next_photo < time.monotonic(): #fell behind, resync instead of firing a burst of commands
+            next_photo = time.monotonic() + photo_interval
+
+photo_thread = threading.Thread(target=PhotoCommander, daemon=True) #daemon, so it dies with the main script
+photo_thread.start()
+print(f"Photo commands every {photo_interval / 60} minutes")
+
+
+
 #IMU board setup (same as IMU.py)
 i2c = busio.I2C(board.SCL, board.SDA) #board pins 5, and 3, respectively
-sensor = adafruit_bno055.BNO055_I2C(i2c)
-#use_external_crystal left off (default/internal oscillator) - this board doesn't have one
-#populated, and forcing it caused persistent None/-128C garbage readings
-#(IMU is set up before the csv is created, so if the IMU fails to init and the service
-#restarts, it doesn't leave a pile of empty csv files behind)
+sensor = None #set by InitIMU()
+
+def InitIMU():
+    #brings up the BNO055. If it isn't responding, this does NOT crash the script (that would take
+    #the photo commands down with it), sensor just stays None and the main loop retries next sample
+    global sensor
+    try:
+        sensor = adafruit_bno055.BNO055_I2C(i2c)
+        #use_external_crystal left off (default/internal oscillator) - this board doesn't have one
+        #populated, and forcing it caused persistent None/-128C garbage readings
+        print("BNO055 IMU initialized")
+    except (OSError, RuntimeError, ValueError) as e: #ValueError = nothing answering at address 0x28
+        sensor = None
+        print(f"BNO055 IMU init failed, retrying next sample: {e}")
+
+InitIMU()
 
 
 def ReadSensor(quantity, num_values):
     #reads one quantity off the BNO055 (ex. "euler", "magnetic"), always returned as a tuple
     #each quantity is its own small I2C read, so if one read glitches, only that
     #quantity is blanked in the row instead of losing the entire sample
+    if sensor is None: #IMU not up, blanks for this sample
+        return (None,) * num_values
     try:
         value = getattr(sensor, quantity)
     except (OSError, RuntimeError) as e:
@@ -111,10 +171,16 @@ print(f"Logging IMU telemetry to {telemetry_path}")
 
 sample_interval = 3.0 #seconds between IMU readings
 next_sample = time.monotonic()
+imu_fail_streak = 0 #consecutive samples with no orientation data
 
 
 try:
     while True:
+        #step 0, if the IMU isn't up (failed at boot, or dropped out mid flight), try to bring it back
+        if sensor is None:
+            InitIMU()
+            imu_fail_streak = 0
+
         #step 1, take a single reading of everything on the IMU
         #(a failed read comes back as blanks, so the gap still shows up in the data)
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -137,7 +203,18 @@ try:
         telemetry_file.flush()
         os.fsync(telemetry_file.fileno()) #force the row onto the SD card now, so a sudden power cut can't lose it
 
-        #step 3, wait for the next 3.0 second mark
+        #step 3, IMU health check
+        #if orientation comes back blank 5 samples (15 s) in a row, the BNO055 has most likely reset
+        #itself or dropped off the bus (cold, brownout). Throw it out, step 0 re-initializes it next sample
+        if CubeSat_angular == (None, None, None):
+            imu_fail_streak += 1
+            if imu_fail_streak >= 5 and sensor is not None:
+                print("IMU unresponsive for 5 samples, re-initializing")
+                sensor = None
+        else:
+            imu_fail_streak = 0
+
+        #step 4, wait for the next 3.0 second mark
         #scheduling off a fixed clock (instead of a plain sleep(3.0)) stops the read/write
         #time from slowly drifting the interval
         next_sample += sample_interval
@@ -151,3 +228,5 @@ try:
 finally:
     print("Flight Computer Flight Loop Deactivated")
     telemetry_file.close()
+    FlightLoop_client.loop_stop()
+    FlightLoop_client.disconnect()

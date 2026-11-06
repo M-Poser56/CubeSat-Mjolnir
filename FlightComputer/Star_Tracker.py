@@ -44,9 +44,12 @@ try:
 
         if recieved_command == "CMD:STARTRACKER":
             try:
-                subprocess.run(["python3", "/home/mjolnir/CubeSat-Mjolnir/TestFiles/camera_test.py"], check=True)
+                #timeout kills a hung camera (ex. libcamera stalling in the cold) after 60 s, so one bad photo can't block every photo after it
+                subprocess.run(["python3", "/home/mjolnirii/CubeSat-Mjolnir/TestFiles/camera_test.py"], check=True, timeout=60) #my contribution is changing the directory! - MPoser
             except subprocess.CalledProcessError as e:
                 print(f"command failed with exit code {e.returncode}")
+            except subprocess.TimeoutExpired:
+                print("camera timed out after 60 s, killed, waiting for next command")
 finally:
         print("Flight Computer Star Tracker Script Deactivated")
         Startracker_client.loop_stop()
