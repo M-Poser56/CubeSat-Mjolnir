@@ -1,5 +1,30 @@
 #FlightLoop.py - main flight loop for the StratoStar Flight 1 configuration
 
+"""
+A Note from the Engineer! (Matt Poser)
+
+This is some code which is running on the November 16th StratoStar flight, in lieu of the
+standard code which runs on the flight computer in conjunction with a groundstation
+(there is no groundstation for this flight, CubeSat is alone as a payload!)
+
+I want on the flight to do 2 main things:
+1 - capture as much telemetry data as I can via the BNO055
+2 - capture as many photos as I can using the onboard camera
+
+Unfortunately due to extreme conditions, I do expect these to fail at some point during the
+ascent. We will see how long I can collect data & telemetry for!
+
+The purpose of this script, is to run on a loop with the same architecture as all the other
+scripts I wrote myself (this is 100% claude), to log as much BNO055 data on a loop as I can.
+While this happens, I want to send 'dummy' mqtt commands to the command handler script, which
+alongside the star tracker script will be the only other two service scripts running. When these
+dummy commands are sent from this script to the command handler, the downstream of the command
+handler script will run how it did on the other Mk.I CubeSat. The only command which will come
+from this script to the command handler is "CMD:STARTRACKER" , so only the star tracker service
+needs to run. Camera is controlled by StarTracker.py, and the downstream camera_test.py
+
+"""
+
 #standard library
 import os
 import csv
