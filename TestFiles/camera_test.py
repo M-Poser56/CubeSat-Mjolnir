@@ -2,7 +2,7 @@ from picamera2 import Picamera2
 from datetime import datetime
 import os
 
-def take_photo(output_dir=os.path.expanduser("~"), fmt="jpg"):
+def take_photo(output_dir=os.path.expanduser("~/FlightPhotos"), fmt="jpg"):
     cam = Picamera2()
 
     # Configure for still capture
