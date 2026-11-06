@@ -22,3 +22,5 @@ import adafruit_rfm9x  #LoRa radio
 
 #hardware - GPIO/PWM (reaction wheels)
 import RPi.GPIO as GPIO
+
+print("successfully ran")
