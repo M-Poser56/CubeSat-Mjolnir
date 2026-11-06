@@ -1,6 +1,7 @@
 from picamera2 import Picamera2
 from datetime import datetime
 import os
+import time
 
 def take_photo(output_dir=os.path.expanduser("~/FlightPhotos"), fmt="jpg"):
     cam = Picamera2()
@@ -12,6 +13,7 @@ def take_photo(output_dir=os.path.expanduser("~/FlightPhotos"), fmt="jpg"):
     cam.configure(config)
 
     cam.start()
+    time.sleep(2) #for the camera to come up to speed/calibration, not snapping right away
 
     # Build filename with timestamp
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

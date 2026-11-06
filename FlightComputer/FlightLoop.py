@@ -71,7 +71,7 @@ FlightLoop_client.loop_start()
 
 
 #dummy star tracker (photo) commands
-photo_interval_min = 0.5 #MINUTES between photos, change this! (0.5 minimum)
+photo_interval_min = 2.0 #MINUTES between photos, change this! (0.5 minimum), set to 2 mins - Nov 6th
 photo_interval = max(photo_interval_min, 0.5) * 60 #seconds, clamped so a typo can't queue photos faster than the camera takes them
 
 def PhotoCommander():
