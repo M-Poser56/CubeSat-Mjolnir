@@ -1,0 +1,36 @@
+# mjolnir-CommandHandler.service - runs Command_Handler.py on the Mjolnir II flight computer
+#
+# All 3 mjolnir-*.service files are identical apart from the script name,
+# so if you change a setting in one, change it in all 3
+#
+# NOTE: systemd only allows comments on their own lines, never after a value on the same line
+
+[Unit]
+Description=Mjolnir II flight computer script: Command_Handler.py
+# start after the local mqtt broker, and pull the broker in if it isn't already running
+After=mosquitto.service
+Wants=mosquitto.service
+# never give up restarting (by default systemd stops retrying after 5 failed starts in 10 s)
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+# run as the flight computer user, not root: ~ becomes /home/mjolnirii (so ~/FlightTelemetry
+# and ~/FlightPhotos land in the right place) and the user's gpio/i2c/spi/video groups apply
+User=mjolnirii
+WorkingDirectory=/home/mjolnirii/CubeSat-Mjolnir/FlightComputer
+# the venv's python, called directly (no activate needed)
+ExecStart=/home/mjolnirii/CubeSat-Mjolnir/.venv/bin/python /home/mjolnirii/CubeSat-Mjolnir/FlightComputer/Command_Handler.py
+# print() output goes straight to the journal instead of sitting in a buffer
+Environment=PYTHONUNBUFFERED=1
+# restart on ANY exit (crash or otherwise), 5 s after it dies. A manual systemctl stop is not restarted
+Restart=always
+RestartSec=5
+# stop with SIGINT (same as Ctrl+C) instead of the default SIGTERM, so the script's
+# finally: block actually runs (closes files, disconnects mqtt, prints Deactivated)
+KillSignal=SIGINT
+# if the script still hasn't stopped 10 s after SIGINT, force kill it
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target
